@@ -3,9 +3,13 @@
 Konzolová hra v Jave 17+ s Mavenom a JUnit 5.
 
 ## Autori programu:
+- Jan Michel
+- Manuel Pokraj
+- Marek Jalowiczor
+- Maksym Kucher
 
 ## Spustenie v IntelliJ IDEA
-1. Otvor priečinok projektu, v ktorom sa nachádza `pom.xml`.
+1. Otvor priečinok projektu, v ktorom sa nachádza `last-exit-finale/pom.xml`.
 2. Nechaj IntelliJ načítať Maven projekt.
 3. Spusti `Main.java`.
 4. Ak neexistuje uložená hra, hra sa spustí priamo bez hlavnej ponuky.

@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,8 +9,8 @@ class HracTest {
     void novyHracMaPrazdnyInventar() {
         Hrac hrac = new Hrac();
 
-        assertTrue(hrac.getPredmety().isEmpty());
-        assertFalse(hrac.ma(Predmet.POZNAMKY));
+        Assertions.assertTrue(hrac.getPredmety().isEmpty());
+        Assertions.assertFalse(hrac.ma(Predmet.POZNAMKY));
     }
 
     @Test
@@ -22,7 +23,7 @@ class HracTest {
 
         hrac.pridajPredmet(poznamky);
 
-        assertTrue(hrac.ma(Predmet.POZNAMKY));
+        Assertions.assertTrue(hrac.ma(Predmet.POZNAMKY));
         assertSame(poznamky, hrac.najdiPredmet("poznam"));
     }
 
@@ -36,7 +37,7 @@ class HracTest {
         Predmet poznamky = hrac.najdiPredmet(Predmet.POZNAMKY);
         hrac.odoberPredmet(poznamky);
 
-        assertFalse(hrac.ma(Predmet.POZNAMKY));
+        Assertions.assertFalse(hrac.ma(Predmet.POZNAMKY));
         assertNull(hrac.najdiPredmet("poznam"));
     }
 
@@ -50,6 +51,6 @@ class HracTest {
         List<Predmet> inventar = hrac.getPredmety();
         inventar.clear();
 
-        assertTrue(hrac.ma(Predmet.POZNAMKY));
+        Assertions.assertTrue(hrac.ma(Predmet.POZNAMKY));
     }
 }

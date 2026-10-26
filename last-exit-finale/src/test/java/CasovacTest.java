@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,9 +10,9 @@ class CasovacTest {
 
         casovac.nastavZostavajuceSekundy(0);
 
-        assertEquals(0, casovac.zostavaSekund());
-        assertTrue(casovac.uplynul());
-        assertEquals("00:00", casovac.format());
+        Assertions.assertEquals(0, casovac.zostavaSekund());
+        Assertions.assertTrue(casovac.uplynul());
+        Assertions.assertEquals("00:00", casovac.format());
     }
 
     @Test
@@ -21,12 +22,12 @@ class CasovacTest {
 
         casovac.pozastav();
 
-        assertFalse(casovac.uplynul());
-        assertEquals(0, casovac.zostavaSekund());
+        Assertions.assertFalse(casovac.uplynul());
+        Assertions.assertEquals(0, casovac.zostavaSekund());
 
         casovac.pokracuj();
 
-        assertTrue(casovac.uplynul());
+        Assertions.assertTrue(casovac.uplynul());
     }
 
     @Test
@@ -41,7 +42,7 @@ class CasovacTest {
 
         assertEquals(predCakanim, poCakani);
         assertTrue(predCakanim >= 99 && predCakanim <= 100);
-        assertFalse(casovac.uplynul());
+        Assertions.assertFalse(casovac.uplynul());
     }
 
     @Test
@@ -60,7 +61,7 @@ class CasovacTest {
                 "Po obnovení musí čas znovu ubúdať.");
         assertTrue(poObnoveni >= zostavaPriPauze - 3,
                 "Čas z pauzy sa nesmie stratiť.");
-        assertFalse(casovac.uplynul());
+        Assertions.assertFalse(casovac.uplynul());
     }
 
     @Test
@@ -73,7 +74,7 @@ class CasovacTest {
         Thread.sleep(1100);
         casovac.pozastav();
 
-        assertEquals(prve, casovac.zostavaSekund());
+        Assertions.assertEquals(prve, casovac.zostavaSekund());
     }
 
     @Test
@@ -82,8 +83,8 @@ class CasovacTest {
 
         casovac.nastavZostavajuceSekundy(-50);
 
-        assertEquals(0, casovac.zostavaSekund());
-        assertEquals("00:00", casovac.format());
+        Assertions.assertEquals(0, casovac.zostavaSekund());
+        Assertions.assertEquals("00:00", casovac.format());
     }
 
     @Test
@@ -99,7 +100,7 @@ class CasovacTest {
 
     @Test
     void limitJePatnastMinut() {
-        assertEquals(15 * 60, Casovac.getLimitSekundy());
+        Assertions.assertEquals(15 * 60, Casovac.getLimitSekundy());
     }
 
     @Test
@@ -144,6 +145,6 @@ class CasovacTest {
         casovac.restart();
 
         assertTrue(casovac.zostavaSekund() >= Casovac.getLimitSekundy() - 1);
-        assertFalse(casovac.uplynul());
+        Assertions.assertFalse(casovac.uplynul());
     }
 }
