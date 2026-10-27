@@ -1,3 +1,5 @@
+package logika;
+
 public class Casovac {
 
     private static final long LIMIT_MS = 15 * 60 * 1000; // 15 minút v milisekundách.

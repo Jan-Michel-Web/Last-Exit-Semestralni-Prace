@@ -1,3 +1,5 @@
+package logika;
+
 /**
  * Spoločný základ pre objekty herného sveta, ktoré majú názov a opis.
  * Miestnosť a predmet tieto vlastnosti dedia.

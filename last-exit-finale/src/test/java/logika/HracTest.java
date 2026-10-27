@@ -1,3 +1,6 @@
+package logika;
+
+import logika.predmety.Predmet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.util.List;

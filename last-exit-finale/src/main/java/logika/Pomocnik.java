@@ -1,7 +1,26 @@
+package logika;
+
 import java.text.Normalizer;
 import java.util.Locale;
 
-public class Pomocnik {
+public final class Pomocnik {
+
+    private Pomocnik() {
+        // Utility class: používa sa cez statické metódy.
+    }
+
+    /** Rozdelený príkaz z konzoly. Parser je jednoduchá textová pomôcka,
+     * preto nie je potrebná samostatná trieda ParserPrikazov. */
+    public record Prikaz(String nazov, String argument) { }
+
+    public static Prikaz rozdelPrikaz(String vstup) {
+        if (vstup == null || vstup.isBlank()) {
+            return new Prikaz("", "");
+        }
+        String upraveny = normalizuj(vstup).trim().replaceAll("\\s+", " ");
+        String[] casti = upraveny.split(" ", 2);
+        return new Prikaz(casti[0], casti.length > 1 ? casti[1].trim() : "");
+    }
 
     // "Skrutkovač" -> "skrutkovac" (malé písmená, bez diakritiky).
     public static String normalizuj(String text) {

@@ -1,3 +1,7 @@
+package logika;
+
+import logika.predmety.Predmet;
+
 import java.util.ArrayList;
 import java.util.List;
 

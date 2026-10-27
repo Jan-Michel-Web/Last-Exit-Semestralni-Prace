@@ -1,3 +1,7 @@
+package logika.predmety;
+
+import logika.HernyObjekt;
+
 public class Predmet extends HernyObjekt {
 
     // Názvy predmetov na jednom mieste, aby sme sa nepomýlili v texte.

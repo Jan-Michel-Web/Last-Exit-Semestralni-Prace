@@ -1,3 +1,7 @@
+package logika;
+
+import logika.miestnosti.Miestnost;
+import logika.predmety.Predmet;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -5,7 +9,6 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -17,10 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Integračné testy skutočných herných príkazov v triede Hra.
- * Existujúce testy projektu zostávajú zachované; toto sú nové testy mechaník.
- */
+/** Integračné testy herných príkazov volaných cez dispatcher triedy Hra. */
 class HraMechanikyTest {
 
     @Test
@@ -273,11 +273,7 @@ class HraMechanikyTest {
         assertEquals(1, test.hrac().getMiestnost());
     }
 
-    /**
-     * Testovacie rozhranie nad skutočnou triedou Hra. Reflection sa používa len
-     * na prípravu novej hry, prístup ku generovaným kódom/stavu a spustenie
-     * súkromného herného cyklu; hráčske príkazy sa spracúvajú pôvodným kódom Hra.
-     */
+    /** Pomocník, ktorý pripraví vstup/výstup a volá súkromný dispatcher ako integračný test. */
     private static final class TestovaciaHra implements AutoCloseable {
         private final java.io.InputStream povodnyVstup = System.in;
         private final PrintStream povodnyVystup = System.out;
@@ -322,8 +318,8 @@ class HraMechanikyTest {
             return zachytenyVystup.toString(StandardCharsets.UTF_8);
         }
 
-        private Hrac hrac() throws Exception {
-            return (Hrac) hodnotaPola("hrac");
+        private Hrac hrac() {
+            return hra.getKontext().getHrac();
         }
 
         @SuppressWarnings("unchecked")
@@ -335,26 +331,41 @@ class HraMechanikyTest {
             return miestnosti().get(index);
         }
 
-        private int intPole(String nazov) throws Exception {
-            Field pole = Hra.class.getDeclaredField(nazov);
-            pole.setAccessible(true);
-            return pole.getInt(hra);
+        private int intPole(String nazov) {
+            HerniKontext kontext = hra.getKontext();
+            return switch (nazov) {
+                case "kodLaboratorium" -> kontext.getKodLaboratorium();
+                case "kodZamok" -> kontext.getKodZamok();
+                case "kodFinalny" -> kontext.getKodFinalny();
+                default -> throw new IllegalArgumentException("Neznámy celočíselný údaj: " + nazov);
+            };
         }
 
-        private boolean booleanPole(String nazov) throws Exception {
-            Field pole = Hra.class.getDeclaredField(nazov);
-            pole.setAccessible(true);
-            return pole.getBoolean(hra);
+        private boolean booleanPole(String nazov) {
+            HerniKontext kontext = hra.getKontext();
+            return switch (nazov) {
+                case "zamokDeaktivovany" -> kontext.isZamokDeaktivovany();
+                case "servisnyPanelOtvoreny" -> kontext.isServisnyPanelOtvoreny();
+                case "chladenieOpravene" -> kontext.isChladenieOpravene();
+                case "kartaOverena" -> kontext.isKartaOverena();
+                case "finalnyKodOvereny" -> kontext.isFinalnyKodOvereny();
+                default -> throw new IllegalArgumentException("Neznámy logický údaj: " + nazov);
+            };
         }
 
-        private boolean dvereSuOdomknute(int index) throws Exception {
-            return ((boolean[]) hodnotaPola("dvereOdomknute"))[index];
+        private boolean dvereSuOdomknute(int index) {
+            return hra.getKontext().dvereSuOdomknute(index);
         }
 
-        private Object hodnotaPola(String nazov) throws Exception {
-            Field pole = Hra.class.getDeclaredField(nazov);
-            pole.setAccessible(true);
-            return pole.get(hra);
+        private Object hodnotaPola(String nazov) {
+            HerniKontext kontext = hra.getKontext();
+            return switch (nazov) {
+                case "hrac" -> kontext.getHrac();
+                case "miestnosti" -> kontext.getMiestnosti();
+                case "vedec" -> kontext.getVedec();
+                case "dvereOdomknute" -> kontext.getDvereOdomknuteKopia();
+                default -> throw new IllegalArgumentException("Neznámy údaj: " + nazov);
+            };
         }
 
         private Object zavolaj(String nazov, Class<?>[] typy, Object... argumenty)

@@ -1,3 +1,5 @@
+package logika;
+
 public class Vedec {
 
     private final String meno;

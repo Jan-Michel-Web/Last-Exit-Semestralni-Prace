@@ -1,3 +1,9 @@
+package logika.miestnosti;
+
+import logika.HernyObjekt;
+import logika.Pomocnik;
+import logika.predmety.Predmet;
+
 import java.util.ArrayList;
 import java.util.List;
 
