@@ -3,10 +3,10 @@
 Konzolová hra v Jave 17+ s Mavenom a JUnit 5.
 
 ## Autori programu:
-- Jan Michel
-- Manuel Pokraj
-- Marek Jalowiczor
-- Maksym Kucher
+- Jan Michel >>>>> herniKontakt,herniStav,HernyObjekt,Hra,Hrac,Pomocnik,Vedec
+- Manuel Pokraj >>>>> Testy (všechny)
+- Marek Jalowiczor >>>>> Příkazy (všechny)
+- Maksym Kucher >>>>> miestnosti (oboje), predmety (oboje), ukladanie (oboje), casovac
 
 ## Spustenie v IntelliJ IDEA
 1. Otvor priečinok projektu, v ktorom sa nachádza `last-exit-finale/pom.xml`.
