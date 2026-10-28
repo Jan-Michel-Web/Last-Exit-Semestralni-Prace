@@ -1,4 +1,5 @@
-﻿name: Java tests
+﻿
+name: Java tests
 
 on:
   push:
@@ -23,8 +24,7 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
-          cache-dependency-path: last-exit-finale/pom.xml
+          cache-dependency-path: pom.xml
 
       - name: Run tests and verify build
-        working-directory: last-exit-finale
         run: mvn --batch-mode --no-transfer-progress clean verify
