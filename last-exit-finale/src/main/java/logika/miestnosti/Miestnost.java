@@ -19,7 +19,7 @@ public class Miestnost extends HernyObjekt {
 
     public String getMoznosti() {
         return moznosti;
-    }
+    } //Táto metóda umožňuje získať text uložený v atribúte moznosti.
 
     // Vraciame kópiu zoznamu, aby ho nikto zvonku nemohol meniť (zapuzdrenie).
     public List<Predmet> getPredmety() {

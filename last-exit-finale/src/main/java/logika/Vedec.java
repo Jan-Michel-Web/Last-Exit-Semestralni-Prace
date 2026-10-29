@@ -7,7 +7,7 @@ public class Vedec {
 
     public Vedec(String meno) {
         this.meno = meno;
-    }
+    } //konštruktor -spustí sa pri new Vedec("Dr. Novák"). Meno ktoré mu pošlem sa  uloží do poľa meno
 
     public String getMeno() {
         return meno;

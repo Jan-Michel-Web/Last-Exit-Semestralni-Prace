@@ -10,7 +10,6 @@ public class Predmet extends HernyObjekt {
     public static final String KARTA = "Prístupová karta";
     public static final String VZORKA = "Chemická vzorka";
 
-    public Predmet(String nazov, String popis) {
-        super(nazov, popis);
+    public Predmet(String nazov, String popis) {super(nazov, popis);
     }
 }

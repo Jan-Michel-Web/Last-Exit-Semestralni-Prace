@@ -119,7 +119,7 @@ class UloziskoHryTest {
     }
 
     @Test
-    void nacitajSpravnePriradiPrivnePrvky() throws IOException {
+    void priradiPravdivostneHodnoty() throws IOException {
         zapis(platneData());
 
         UlozenyStavHry stav = ulozisko.nacitaj();
