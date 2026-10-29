@@ -7,3 +7,6 @@ target/
 
 # Local game save: do not commit a personal in-progress save
 last_exit_save.properties
+
+# Logovacie súbory
+logs/

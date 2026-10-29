@@ -1,5 +1,6 @@
 package logika;
 
+import logika.logovanie.SpravcaLogov;
 import logika.miestnosti.Miestnost;
 import logika.miestnosti.TvorcaMiestnosti;
 import logika.predmety.Predmet;
@@ -47,9 +48,21 @@ public final class HerniKontext {
             stav.obnovZoUlozenia(ulozenyStav, tvorcaMiestnosti);
             return true;
         } catch (IOException e) {
-            System.out.println("Uloženú hru sa nepodarilo načítať: " + e.getMessage());
-        } catch (IllegalArgumentException | NullPointerException e) {
-            System.out.println("Uložený súbor má neplatný obsah. Hru sa nepodarilo načítať.");
+            SpravcaLogov.zalogujChybu(
+                    "Nepodarilo sa načítať uloženú hru: "
+                            + ulozisko.getCesta(), e
+            );
+        }
+        catch (IllegalArgumentException e) {
+            SpravcaLogov.zalogujVarovanie(
+                    "Uložený súbor má neplatný obsah. Hru sa nepodarilo načítať."
+                            + ulozisko.getCesta(), e
+            );
+        }
+        catch (NullPointerException e) {
+            SpravcaLogov.zalogujChybu(
+                    "Pri načítaní uloženej hry nastala neočakávaná chyba.", e
+            );
         }
         return false;
     }
@@ -80,7 +93,10 @@ public final class HerniKontext {
             }
         } catch (IOException e) {
             getCasovac().pokracuj();
-            System.out.println("Hru sa nepodarilo uložiť: " + e.getMessage());
+            SpravcaLogov.zalogujChybu(
+                    "Nepodarilo sa uložiť hru: " + ulozisko.getCesta(),
+                    e
+            );
         }
     }
 
@@ -168,7 +184,10 @@ public final class HerniKontext {
         try {
             ulozisko.vymaz();
         } catch (IOException e) {
-            System.out.println("Upozornenie: Starú uloženú hru sa nepodarilo vymazať: " + e.getMessage());
+            SpravcaLogov.zalogujVarovanie(
+                    "Po výhre sa nepodarilo vymazať starú uloženú hru: "
+                            + ulozisko.getCesta(), e
+            );
         }
         ponukniRestart();
     }

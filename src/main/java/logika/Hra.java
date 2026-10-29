@@ -1,5 +1,6 @@
 package logika;
 
+import logika.logovanie.SpravcaLogov;
 import logika.prikazy.*;
 
 import java.io.IOException;
@@ -68,7 +69,9 @@ public class Hra {
                     try {
                         kontext.vymazUlozenuHru();
                     } catch (IOException e) {
-                        System.out.println("Starú uloženú hru sa nepodarilo vymazať: " + e.getMessage());
+                        SpravcaLogov.zalogujVarovanie(
+                                "Pred novou hrou sa nepodarilo vymazať staré uloženie.", e
+                        );
                         continue;
                     }
                 }
