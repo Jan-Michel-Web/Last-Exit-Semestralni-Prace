@@ -17,7 +17,7 @@ public class TvorcaMiestnosti {
                 "Stojíš v zdemolovanom laboratóriu. Červené núdzové svetlá blikajú a sirény kvília.\n"
                         + "Pracovný stôl je plný vybavenia. Na stene je panel s číselným zámkom,\n"
                         + "ktorý blokuje dvere do riadiaceho centra.",
-                "preskumaj stol, preskumaj panel, zober <predmet>, precitaj poznamky, kod, chod riadiace centrum"
+                "preskumaj stol, preskumaj panel, zober <predmet>, precitaj poznamky, kod, chod riadiace centrum", new PreskumajLaboratorium()
         );
 
         laboratorium.pridajPredmet(TvorcaPredmetov.vytvor(Predmet.POZNAMKY));
@@ -28,7 +28,7 @@ public class TvorcaMiestnosti {
                 "Monitory blikajú varovnými správami. Je tu počítačový terminál, bezpečnostný panel\n"
                         + "a servisný panel. Pri konzole stojí vedec Dr. Elias Novak.",
                 "hovorit, preskumaj terminal / servisny panel / bezpecnostny panel / vedca, kod,\n"
-                        + "pouzi skrutkovac na servisny panel, zober <predmet>, chod laboratorium / dekontaminacna komora"
+                        + "pouzi skrutkovac na servisny panel, zober <predmet>, chod laboratorium / dekontaminacna komora", new PreskumajRiadiaceCentrum()
         );
 
         Miestnost komora = new Miestnost(
@@ -36,7 +36,7 @@ public class TvorcaMiestnosti {
                 "Vzduch je cítiť chemikáliami. Je tu poškodený núdzový chladiaci systém,\n"
                         + "bezpečnostný panel a zamknuté výstupné dvere.",
                 "preskumaj chladiaci system / panel / dvere, pouzi vzorku na chladiaci system,\n"
-                        + "pouzi kartu na panel, kod, chod riadiace centrum"
+                        + "pouzi kartu na panel, kod, chod riadiace centrum", new PreskumajKomoru()
         );
 
         miestnosti.add(laboratorium);

@@ -8,7 +8,7 @@ public abstract class HernyObjekt {
     private final String nazov;
     private final String popis;
 
-    protected HernyObjekt(String nazov, String popis) {
+    protected HernyObjekt(String nazov, String popis) { //konstruktor
         this.nazov = nazov;
         this.popis = popis;
     }

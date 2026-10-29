@@ -11,10 +11,20 @@ public class Miestnost extends HernyObjekt {
 
     private final String moznosti; // text pre príkaz napoveda
     private final List<Predmet> predmety = new ArrayList<>();
+    private final StrategiaPreskumania strategia;
 
-    public Miestnost(String nazov, String popis, String moznosti) {
+    public Miestnost(
+            String nazov,
+            String popis,
+            String moznosti,
+            StrategiaPreskumania strategia) {
         super(nazov, popis);
         this.moznosti = moznosti;
+        this.strategia = strategia;
+    }
+
+    public StrategiaPreskumania getStrategia() {
+        return strategia;
     }
 
     public String getMoznosti() {

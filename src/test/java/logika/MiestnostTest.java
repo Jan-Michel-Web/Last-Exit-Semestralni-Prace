@@ -17,7 +17,7 @@ class MiestnostTest {
 
     @BeforeEach
     void setUp() {
-        miestnost = new Miestnost("Laboratórium", "Veľká miestnosť s mikroskopmi.", "Môžeš ísť na chodbu.");
+        miestnost = new Miestnost("Laboratórium", "Veľká miestnosť s mikroskopmi.", "Môžeš ísť na chodbu.", (kontext, objekt) -> { });
         skrutkovac = new Predmet(Predmet.SKRUTKOVAC, "Obyčajný skrutkovač.");
         karta = new Predmet(Predmet.KARTA, "Karta na otváranie dverí.");
     }

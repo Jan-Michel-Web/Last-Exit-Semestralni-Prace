@@ -147,7 +147,7 @@ class HraMechanikyTest {
     void ulozenieANacitanieObnoviStavRozhovoruSVedcom() throws Exception {
         Path ulozenaHra = Paths.get("last_exit_save.properties").toAbsolutePath();
         boolean povodnySuborExistoval = Files.exists(ulozenaHra);
-        byte[] povodnyObsah = povodnySuborExistoval ? Files.readAllBytes(ulozenaHra) : null;
+        String povodnyObsah = povodnySuborExistoval ? Files.readString(ulozenaHra) : null;
 
         // Test používa skutočný súbor hry, ale po teste obnoví prípadný používateľský save.
         try {
@@ -180,7 +180,7 @@ class HraMechanikyTest {
             }
         } finally {
             if (povodnySuborExistoval) {
-                Files.write(ulozenaHra, povodnyObsah);
+                Files.writeString(ulozenaHra, povodnyObsah);
             } else {
                 Files.deleteIfExists(ulozenaHra);
             }
