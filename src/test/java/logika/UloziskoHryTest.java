@@ -1,6 +1,8 @@
 package logika;
 
+import logika.miestnosti.TvorcaMiestnosti;
 import logika.predmety.Predmet;
+import logika.predmety.TvorcaPredmetov;
 import logika.ukladanie.UlozenyStavHry;
 import logika.ukladanie.UloziskoHry;
 import org.junit.jupiter.api.BeforeEach;
@@ -284,5 +286,37 @@ class UloziskoHryTest {
         zapis(data);
 
         assertThrows(RuntimeException.class, () -> ulozisko.nacitaj());
+    }
+
+    @Test
+    void ulozPotomNacitajZachovaStavHry() throws IOException {
+        HerniStav povodny = new HerniStav();
+        povodny.novaHra(new TvorcaMiestnosti());
+
+        povodny.getHrac().pridajPredmet(
+                TvorcaPredmetov.vytvor(Predmet.SKRUTKOVAC)
+        );
+
+        ulozisko.uloz(povodny);
+
+        UlozenyStavHry nacitany = ulozisko.nacitaj();
+
+        assertEquals(
+                povodny.getKodLaboratorium(),
+                nacitany.kodLaboratorium()
+        );
+        assertEquals(
+                povodny.getKodZamok(),
+                nacitany.kodZamok()
+        );
+        assertEquals(
+                povodny.getKodFinalny(),
+                nacitany.kodFinalny()
+        );
+
+        assertEquals(
+                List.of(Predmet.SKRUTKOVAC),
+                nacitany.predmetyHraca()
+        );
     }
 }

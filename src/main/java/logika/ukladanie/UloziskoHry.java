@@ -1,8 +1,6 @@
 package logika.ukladanie;
 
 import logika.*;
-import logika.miestnosti.Miestnost;
-import logika.predmety.Predmet;
 import logika.predmety.TvorcaPredmetov;
 
 import java.io.IOException;
@@ -15,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
-/** Jediné miesto v aplikácii, ktoré pozná formát a súbor uloženia hry. */
+/** Zodpovedá za čítanie, validáciu a zápis uloženého stavu hry. */
 public final class UloziskoHry {
     private final Path cesta;
+    private final RegistrUlozenia registrUlozenia = new RegistrUlozenia();
 
     public UloziskoHry() {
         this(Paths.get("last_exit_save.properties"));
@@ -43,27 +41,7 @@ public final class UloziskoHry {
 
     /** Zapisuje všetky dáta hry do existujúceho, stabilného formátu Properties. */
     public void uloz(HerniStav stav) throws IOException {
-        Properties data = new Properties();
-        data.setProperty("player.room", Integer.toString(stav.getHrac().getMiestnost()));
-        data.setProperty("player.items", spojNazvyPredmetov(stav.getHrac().getPredmety()));
-        data.setProperty("timer.remainingSeconds", Long.toString(stav.getCasovac().zostavaSekund()));
-        data.setProperty("code.laboratory", Integer.toString(stav.getKodLaboratorium()));
-        data.setProperty("code.security", Integer.toString(stav.getKodZamok()));
-        data.setProperty("code.final", Integer.toString(stav.getKodFinalny()));
-        data.setProperty("door.0.open", Boolean.toString(stav.dvereSuOdomknute(0)));
-        data.setProperty("door.1.open", Boolean.toString(stav.dvereSuOdomknute(1)));
-        data.setProperty("lock.deactivated", Boolean.toString(stav.isZamokDeaktivovany()));
-        data.setProperty("servicePanel.open", Boolean.toString(stav.isServisnyPanelOtvoreny()));
-        data.setProperty("cooling.repaired", Boolean.toString(stav.isChladenieOpravene()));
-        data.setProperty("card.verified", Boolean.toString(stav.isKartaOverena()));
-        data.setProperty("finalCode.verified", Boolean.toString(stav.isFinalnyKodOvereny()));
-        data.setProperty("notes.read", Boolean.toString(stav.isPoznamkyPrecitane()));
-        data.setProperty("scientist.dialogFinished", Boolean.toString(stav.getVedec().isDialogDokonceny()));
-
-        List<Miestnost> miestnosti = stav.getMiestnosti();
-        for (int i = 0; i < miestnosti.size(); i++) {
-            data.setProperty("room." + i + ".items", spojNazvyPredmetov(miestnosti.get(i).getPredmety()));
-        }
+        Properties data = registrUlozenia.vytvorProperties(stav);
 
         try (OutputStream vystup = Files.newOutputStream(cesta)) {
             data.store(vystup, "Ulozena hra Last Exit");
@@ -73,36 +51,77 @@ public final class UloziskoHry {
     /** Načíta a validuje uloženie; živý herný stav ešte nemení. */
     public UlozenyStavHry nacitaj() throws IOException {
         Properties data = new Properties();
+
         try (InputStream vstup = Files.newInputStream(cesta)) {
             data.load(vstup);
         }
 
-        int miestnost = nacitajCeleCislo(data, "player.room");
-        if (miestnost < 0 || miestnost >= 3) {
-            throw new IllegalArgumentException("Neplatná miestnosť v uloženej hre.");
+        int miestnost = nacitajCeleCislo(
+                data, RegistrUlozenia.KLUC_MIESTNOST_HRACA
+        );
+
+        if (miestnost < 0 || miestnost >= HerniKonstanty.POCET_MIESTNOSTI) {
+            throw new IllegalArgumentException(
+                    "Neplatná miestnosť v uloženej hre."
+            );
         }
 
-        long zostavajuceSekundy = nacitajDlheCislo(data, "timer.remainingSeconds");
-        if (zostavajuceSekundy < 0 || zostavajuceSekundy > Casovac.getLimitSekundy()) {
-            throw new IllegalArgumentException("Neplatný čas v uloženej hre.");
+        long zostavajuceSekundy = nacitajDlheCislo(
+                data, RegistrUlozenia.KLUC_ZOSTAVAJUCI_CAS
+        );
+
+        if (zostavajuceSekundy < 0
+                || zostavajuceSekundy > Casovac.getLimitSekundy()) {
+            throw new IllegalArgumentException(
+                    "Neplatný čas v uloženej hre."
+            );
         }
 
-        int kodLaboratorium = nacitajKod(data, "code.laboratory");
-        int kodZamok = nacitajKod(data, "code.security");
-        int kodFinalny = nacitajKod(data, "code.final");
-        if (kodLaboratorium == kodZamok || kodLaboratorium == kodFinalny || kodZamok == kodFinalny) {
-            throw new IllegalArgumentException("Kódy v uloženej hre sa nesmú opakovať.");
+        int kodLaboratorium = nacitajKod(
+                data, RegistrUlozenia.KLUC_KOD_LABORATORIUM
+        );
+
+        int kodZamok = nacitajKod(
+                data, RegistrUlozenia.KLUC_KOD_ZAMOK
+        );
+
+        int kodFinalny = nacitajKod(
+                data, RegistrUlozenia.KLUC_KOD_FINALNY
+        );
+
+        if (kodLaboratorium == kodZamok
+                || kodLaboratorium == kodFinalny
+                || kodZamok == kodFinalny) {
+            throw new IllegalArgumentException(
+                    "Kódy v uloženej hre sa nesmú opakovať."
+            );
         }
 
-        List<String> predmetyHraca = rozdelNazvy(nacitajPovinnuHodnotu(data, "player.items"));
+        List<String> predmetyHraca = rozdelNazvy(
+                nacitajPovinnuHodnotu(
+                        data, RegistrUlozenia.KLUC_PREDMETY_HRACA
+                )
+        );
+
         List<List<String>> predmetyMiestnosti = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            predmetyMiestnosti.add(rozdelNazvy(data.getProperty("room." + i + ".items", "")));
+
+        for (int i = 0; i < HerniKonstanty.POCET_MIESTNOSTI; i++) {
+            predmetyMiestnosti.add(
+                    rozdelNazvy(
+                            data.getProperty(
+                                    RegistrUlozenia.klucPredmetyMiestnosti(i),
+                                    ""
+                            )
+                    )
+            );
         }
 
-        // Neznámy názov predmetu zneplatní uloženie ešte pred zmenou aktuálnej hry.
+        // Overenie, či všetky názvy predmetov existujú.
         predmetyHraca.forEach(TvorcaPredmetov::vytvor);
-        predmetyMiestnosti.forEach(zoznam -> zoznam.forEach(TvorcaPredmetov::vytvor));
+
+        predmetyMiestnosti.forEach(
+                zoznam -> zoznam.forEach(TvorcaPredmetov::vytvor)
+        );
 
         return new UlozenyStavHry(
                 miestnost,
@@ -111,20 +130,31 @@ public final class UloziskoHry {
                 kodLaboratorium,
                 kodZamok,
                 kodFinalny,
-                nacitajBoolean(data, "door.0.open"),
-                nacitajBoolean(data, "door.1.open"),
-                nacitajBoolean(data, "lock.deactivated"),
-                nacitajBoolean(data, "servicePanel.open"),
-                nacitajBoolean(data, "cooling.repaired"),
-                nacitajBoolean(data, "card.verified"),
-                nacitajBoolean(data, "finalCode.verified"),
-                nacitajBoolean(data, "notes.read"),
-                nacitajBoolean(data, "scientist.dialogFinished"),
-                predmetyMiestnosti);
-    }
-
-    private String spojNazvyPredmetov(List<Predmet> predmety) {
-        return predmety.stream().map(Predmet::getNazov).collect(Collectors.joining("|"));
+                nacitajBoolean(data, RegistrUlozenia.klucDvere(0)),
+                nacitajBoolean(data, RegistrUlozenia.klucDvere(1)),
+                nacitajBoolean(
+                        data, RegistrUlozenia.KLUC_ZAMOK_DEAKTIVOVANY
+                ),
+                nacitajBoolean(
+                        data, RegistrUlozenia.KLUC_SERVISNY_PANEL
+                ),
+                nacitajBoolean(
+                        data, RegistrUlozenia.KLUC_CHLADENIE
+                ),
+                nacitajBoolean(
+                        data, RegistrUlozenia.KLUC_KARTA
+                ),
+                nacitajBoolean(
+                        data, RegistrUlozenia.KLUC_FINALNY_KOD
+                ),
+                nacitajBoolean(
+                        data, RegistrUlozenia.KLUC_POZNAMKY
+                ),
+                nacitajBoolean(
+                        data, RegistrUlozenia.KLUC_DIALOG_VEDCA
+                ),
+                predmetyMiestnosti
+        );
     }
 
     private List<String> rozdelNazvy(String text) {
@@ -152,7 +182,7 @@ public final class UloziskoHry {
 
     private int nacitajKod(Properties data, String kluc) {
         int kod = nacitajCeleCislo(data, kluc);
-        if (kod < 1000 || kod > 9999) {
+        if (kod < HerniKonstanty.MIN_KOD || kod > HerniKonstanty.MAX_KOD) {
             throw new IllegalArgumentException("Neplatný kód v uloženej hre.");
         }
         return kod;

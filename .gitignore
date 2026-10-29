@@ -10,3 +10,6 @@ last_exit_save.properties
 
 # Logovacie súbory
 logs/
+
+# IntelliJ compilation output
+out/

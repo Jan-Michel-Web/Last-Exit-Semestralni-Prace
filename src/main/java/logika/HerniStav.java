@@ -15,7 +15,6 @@ import java.util.Random;
  * priamo so súborom; tieto úlohy majú na starosti iné triedy.
  */
 public final class HerniStav {
-    private static final int POCET_MIESTNOSTI = 3;
 
     private final Casovac casovac = new Casovac();
     private final Random random = new Random();
@@ -23,7 +22,7 @@ public final class HerniStav {
     private Hrac hrac;
     private Vedec vedec;
     private List<Miestnost> miestnosti = new ArrayList<>();
-    private boolean[] dvereOdomknute = new boolean[POCET_MIESTNOSTI - 1];
+    private boolean[] dvereOdomknute = new boolean[HerniKonstanty.POCET_MIESTNOSTI - 1];
 
     private int kodLaboratorium;
     private int kodZamok;
@@ -42,7 +41,7 @@ public final class HerniStav {
         hrac = new Hrac();
         vedec = new Vedec("Dr. Elias Novak");
         miestnosti = new ArrayList<>(tvorcaMiestnosti.vytvorMiestnosti());
-        dvereOdomknute = new boolean[POCET_MIESTNOSTI - 1];
+        dvereOdomknute = new boolean[HerniKonstanty.POCET_MIESTNOSTI - 1];
 
         zamokDeaktivovany = false;
         servisnyPanelOtvoreny = false;
@@ -93,7 +92,7 @@ public final class HerniStav {
     }
 
     private int nahodnyKod() {
-        return 1000 + random.nextInt(9000);
+        return HerniKonstanty.MIN_KOD + random.nextInt(HerniKonstanty.MAX_KOD - HerniKonstanty.MIN_KOD + 1);
     }
 
     public Hrac getHrac() { return hrac; }

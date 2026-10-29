@@ -30,7 +30,6 @@ public final class SpravcaLogov {
             LOGGER.addHandler(handler);
             LOGGER.setLevel(Level.ALL);
 
-            // Zabránenie duplicitnému vypisovaniu do konzoly
             LOGGER.setUseParentHandlers(true);
 
         } catch (IOException e) {
